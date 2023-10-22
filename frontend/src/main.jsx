@@ -36,7 +36,7 @@ const wagmiConfig = createConfig({
 })
 
 const smartWalletOptions = {
-  factoryAddress: "0xb218A5dd36f40e0626D8BCe48A1169BeD1A1571B",
+  factoryAddress: "0x2d27d0302cca2d9e540ffd628c9a68238bc1a3ab",
   gasless: true,
 };
 
