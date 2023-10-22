@@ -62,6 +62,38 @@ function App() {
 
   const { address, isConnected } = useAccount();
 
+  const {
+    mutateAsync: donateERC20,
+    isLoading: apeloading,
+    isSuccess,
+  } = useContractWrite(contract, "donateERC20");
+
+  const { contract: apeContract } = useContract(
+    "0x328507DC29C95c170B56a1b3A758eB7a9E73455c"
+  );
+  const { mutateAsync: approve } = useContractWrite(apeContract, "approve");
+
+  const call = async (githubUserId) => {
+    try {
+      const approvedData = await approve({
+        args: [
+          "0x08D20b6672D7C6B35A912B27B898F939530bBDE2",
+          "200000000000000000000",
+        ],
+      });
+      const data = await donateERC20({
+        args: [
+          githubUserId,
+          "0x328507DC29C95c170B56a1b3A758eB7a9E73455c",
+          "200000000000000000000",
+        ],
+      });
+      console.info("contract call successs", data);
+    } catch (err) {
+      console.error("contract call failure", err);
+    }
+  };
+
   return (
     <div className="App bg-gradient-to-r from-teal-400 to-teal-600 p-8">
       <Navbar />
@@ -103,12 +135,6 @@ function App() {
                     </span>
                     <div className="group relative">
                       <Web3Button
-                        disabled={!isConnected}
-                        className={`bg-red-500 text-white px-4 py-2 rounded ${
-                          !isConnected
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-red-600 transition duration-300"
-                        }`}
                         contractAddress={
                           "0x08D20b6672D7C6B35A912B27B898F939530bBDE2"
                         }
@@ -123,16 +149,24 @@ function App() {
                         }
                         onSuccess={() => {
                           alert(
-                            "Gift sent! Check active issue at https://github.com/AvinashNayak27/gitGift/issues/3"
+                            "Gift sent! Check active issue at https://github.com/AvinashNayak27/gitGift/issues"
                           );
                         }}
                       >
                         Gift
                       </Web3Button>
-
-                      {!isConnected && (
+                      <button
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+                        onClick={() => call(follower.id)}
+                      >
+                        Gift testnet APE
+                      </button>
+                      {isSuccess && (
                         <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 px-3 py-1 text-xs text-white bg-black rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          Please connect your wallet to send a gift
+                          Gift sent! Check active issue at{" "}
+                          <a href="https://github.com/AvinashNayak27/gitGift/issues">
+                            GitHub
+                          </a>
                         </span>
                       )}
                     </div>

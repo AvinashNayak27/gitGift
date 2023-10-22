@@ -56,9 +56,9 @@ async function getUsernameFromID(userID) {
     }
 }
 
-const createIssue = async (githubUsername) => {
-    const issueTitle = "Got some ETH for you!";
-    const issueBody = `Hello @${githubUsername}. Someone Gifted you some ETH claim at http://localhost:5173/claim `;
+const createIssue = async (githubUsername,token) => {
+    const issueTitle = `Got some ${token} for you!`;
+    const issueBody = `Hello @${githubUsername}. Someone Gifted you some ${token} claim at http://localhost:5173/claim `;
 
     try {
         const response = await axios.post(
@@ -97,8 +97,17 @@ const fn = async () => {
             console.log(githubUserIdString);
             const githubUsername = await getUsernameFromID(githubUserIdString);
             console.log(githubUsername);
-            await createIssue(githubUsername);
+            await createIssue(githubUsername,"ETH");
         }
+        if (event.eventName === "donateERC20") {
+            console.log(event.data);
+            const githubUserIdString = event.data.githubUserId.toString();
+            console.log(githubUserIdString);
+            const githubUsername = await getUsernameFromID(githubUserIdString);
+            console.log(githubUsername);
+            await createIssue(githubUsername,"APE Coin");
+        }
+
     });
 };
 
