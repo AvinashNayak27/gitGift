@@ -23,7 +23,7 @@ function App() {
   }, []);
 
   const { contract } = useContract(
-    "0x08D20b6672D7C6B35A912B27B898F939530bBDE2"
+    "0x144b8A177c1C735065c9c8C1016a1bEf20d112a7"
   );
   const { mutateAsync, isLoading } = useContractWrite(contract, "donateETH");
 
@@ -69,7 +69,7 @@ function App() {
   } = useContractWrite(contract, "donateERC20");
 
   const { contract: apeContract } = useContract(
-    "0x328507DC29C95c170B56a1b3A758eB7a9E73455c"
+    "0x4CDE1cDCDC24A52A7Fa664f7A96eD183d44985fb"
   );
   const { mutateAsync: approve } = useContractWrite(apeContract, "approve");
 
@@ -77,7 +77,7 @@ function App() {
     try {
       const approvedData = await approve({
         args: [
-          "0x08D20b6672D7C6B35A912B27B898F939530bBDE2",
+          "0x144b8A177c1C735065c9c8C1016a1bEf20d112a7",
           "200000000000000000000",
         ],
       });
@@ -136,7 +136,7 @@ function App() {
                     <div className="group relative">
                       <Web3Button
                         contractAddress={
-                          "0x08D20b6672D7C6B35A912B27B898F939530bBDE2"
+                          "0x144b8A177c1C735065c9c8C1016a1bEf20d112a7"
                         }
                         action={() =>
                           mutateAsync({

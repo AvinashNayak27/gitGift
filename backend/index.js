@@ -83,11 +83,11 @@ const createIssue = async (githubUsername,token) => {
 
 const fn = async () => {
 
-    const sdk = new ThirdwebSDK("goerli", {
+    const sdk = new ThirdwebSDK("mumbai", {
         secretKey: process.env.YOUR_SECRET_KEY,
     });
 
-    const contract = await sdk.getContract("0x08D20b6672D7C6B35A912B27B898F939530bBDE2");
+    const contract = await sdk.getContract("0x144b8A177c1C735065c9c8C1016a1bEf20d112a7");
 
     contract.events.listenToAllEvents(async (event) => {
         console.log(event.eventName); // the name of the emitted event

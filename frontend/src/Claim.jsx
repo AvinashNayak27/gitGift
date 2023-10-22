@@ -14,7 +14,7 @@ import { useAddress, useContract, useContractWrite, useConnectionStatus } from "
 export default function Claim() {
     const address = useAddress();
     const [responseBytes, setResponseBytes] = useState(null);
-    const { contract } = useContract("0x08D20b6672D7C6B35A912B27B898F939530bBDE2")
+    const { contract } = useContract("0x144b8A177c1C735065c9c8C1016a1bEf20d112a7")
     const { mutateAsync: claimWithSismo, isLoading } = useContractWrite(contract, "claimWithSismo")
 
     const call = async () => {
@@ -63,8 +63,9 @@ export default function Claim() {
                             <button
                                 onClick={call}
                                 className="bg-red-500 px-4 py-2 rounded text-white hover:bg-red-600 transition duration-300"
+                                disabled={isLoading}
                             >
-                                Claim
+                                {isLoading ? "Loading..." : "Claim"}
                             </button>
                         </div>
                     )}
