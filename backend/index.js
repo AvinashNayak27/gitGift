@@ -99,7 +99,7 @@ const fn = async () => {
             console.log(githubUsername);
             await createIssue(githubUsername,"ETH");
         }
-        if (event.eventName === "donateERC20") {
+        if (event.eventName === "DonatedERC20") {
             console.log(event.data);
             const githubUserIdString = event.data.githubUserId.toString();
             console.log(githubUserIdString);
