@@ -84,7 +84,7 @@ function App() {
       const data = await donateERC20({
         args: [
           githubUserId,
-          "0x328507DC29C95c170B56a1b3A758eB7a9E73455c",
+          "0x4CDE1cDCDC24A52A7Fa664f7A96eD183d44985fb",
           "200000000000000000000",
         ],
       });
