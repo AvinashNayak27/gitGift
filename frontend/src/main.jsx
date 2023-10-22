@@ -15,7 +15,7 @@ import {
   goerli,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
-import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { ThirdwebProvider, smartWallet, embeddedWallet, metamaskWallet, localWallet } from "@thirdweb-dev/react";
 import { Goerli } from "@thirdweb-dev/chains";
 
 const { chains, publicClient } = configureChains(
@@ -35,23 +35,39 @@ const wagmiConfig = createConfig({
   publicClient
 })
 
+const smartWalletOptions = {
+  factoryAddress: "0xb218A5dd36f40e0626D8BCe48A1169BeD1A1571B",
+  gasless: true,
+};
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <ThirdwebProvider
-          activeChain={Goerli}
-          clientId="e6375f666c4b9e2a910c29336018dba2"
-        >
-          <Router>
-            <Routes>
-              <Route path="/" element={<App />} />
-              <Route path="/success" element={<LoginSuccess />} />
-              <Route path='/claim' element={<Claim />} />
-            </Routes>
-          </Router>
-        </ThirdwebProvider>
-      </RainbowKitProvider>
+      <ThirdwebProvider
+        activeChain={Goerli}
+        clientId="3dabe0bac070c732639774e387ed5ad1"
+        supportedWallets={[
+          metamaskWallet(),
+          smartWallet(
+            localWallet(),
+            smartWalletOptions,
+          ),
+          smartWallet(
+            embeddedWallet(),
+            smartWalletOptions,
+          ),
+        ]}
+      >
+        <Router>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/success" element={<LoginSuccess />} />
+            <Route path='/claim' element={<Claim />} />
+          </Routes>
+        </Router>
+      </ThirdwebProvider>
+
     </WagmiConfig>
   </React.StrictMode>,
 )
+

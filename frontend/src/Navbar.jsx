@@ -24,6 +24,7 @@ function Navbar() {
                             theme="dark"
                             btnTitle="Connect Wallet"
                             switchToActiveChain={true}
+                            modalSize={"compact"}
                         />
 
 

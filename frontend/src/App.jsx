@@ -1,124 +1,150 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './App.css';
-import GitHubLoginButton from './GitHubLoginButton';
-import { useAccount } from 'wagmi';
-import Navbar from './Navbar';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
+import GitHubLoginButton from "./GitHubLoginButton";
+import { useAccount } from "wagmi";
+import Navbar from "./Navbar";
 import { utils } from "ethers";
-
 
 import { useContract, useContractWrite, Web3Button } from "@thirdweb-dev/react";
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userData, setUserData] = useState(null);
-    const [followers, setFollowers] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [followers, setFollowers] = useState([]);
 
-    useEffect(() => {
-        const token = localStorage.getItem('githubAccessToken');
-        if (token) {
-            setIsLoggedIn(true);
-            fetchUserData(token);
-            fetchUserFollowers(token);
+  useEffect(() => {
+    const token = localStorage.getItem("githubAccessToken");
+    if (token) {
+      setIsLoggedIn(true);
+      fetchUserData(token);
+      fetchUserFollowers(token);
+    }
+  }, []);
+
+  const { contract } = useContract(
+    "0x08D20b6672D7C6B35A912B27B898F939530bBDE2"
+  );
+  const { mutateAsync, isLoading } = useContractWrite(contract, "donateETH");
+
+  const fetchUserData = async (token) => {
+    try {
+      const response = await axios.get("https://api.github.com/user", {
+        headers: {
+          Accept: "application/vnd.github+json",
+          Authorization: `Bearer ${token}`,
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      });
+      setUserData(response.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  const fetchUserFollowers = async (token) => {
+    try {
+      const response = await axios.get(
+        "https://api.github.com/user/followers",
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${token}`,
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
         }
-    }, []);
+      );
+      setFollowers(response.data);
+    } catch (error) {
+      console.error("Error fetching user followers:", error);
+    }
+  };
 
-    const { contract } = useContract("0x08D20b6672D7C6B35A912B27B898F939530bBDE2");
-    const { mutateAsync, isLoading } = useContractWrite(contract, "donateETH")
+  const { address, isConnected } = useAccount();
 
+  return (
+    <div className="App bg-gradient-to-r from-teal-400 to-teal-600 p-8">
+      <Navbar />
 
-    const fetchUserData = async (token) => {
-        try {
-            const response = await axios.get('https://api.github.com/user', {
-                headers: {
-                    'Accept': 'application/vnd.github+json',
-                    'Authorization': `Bearer ${token}`,
-                    'X-GitHub-Api-Version': '2022-11-28'
-                }
-            });
-            setUserData(response.data);
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
+      <header className="App-header text-center py-16 border-b-4 border-yellow-500">
+        <h1 className="text-5xl font-extrabold mb-8 text-yellow-200 tracking-widest">
+          Welcome to GitGift
+        </h1>
+        {!isLoggedIn && <GitHubLoginButton />}
+        {isLoggedIn && userData && (
+          <div className="bg-orange-200 p-8 rounded-lg shadow-lg max-w-2xl mx-auto border-4 border-yellow-500">
+            <img
+              src={userData.avatar_url}
+              alt="User Avatar"
+              className="w-32 h-32 mx-auto rounded-full shadow-md mb-6 border-4 border-yellow-500"
+            />
+            <p className="text-2xl font-semibold mb-3 text-teal-800">
+              Username: {userData.login}
+            </p>
+            <p className="text-xl mb-3 text-teal-700">Name: {userData.name}</p>
+            <p className="text-lg mb-6 text-teal-600">Bio: {userData.bio}</p>
+            <h2 className="text-4xl font-bold mb-6 tracking-wider">
+              Followers:
+            </h2>
+            <ul className="grid grid-cols-2 gap-6">
+              {followers.map((follower) => (
+                <li key={follower.id} className="flex items-center space-x-4">
+                  <img
+                    src={follower.avatar_url}
+                    alt="Follower Avatar"
+                    className="w-16 h-16 rounded-full border-2 border-yellow-500"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-lg font-medium text-teal-800">
+                      {follower.login}
+                    </span>
+                    <span className="text-sm text-gray-700 mb-2">
+                      {follower.id}
+                    </span>
+                    <div className="group relative">
+                      <Web3Button
+                        disabled={!isConnected}
+                        className={`bg-red-500 text-white px-4 py-2 rounded ${
+                          !isConnected
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-red-600 transition duration-300"
+                        }`}
+                        contractAddress={
+                          "0x08D20b6672D7C6B35A912B27B898F939530bBDE2"
+                        }
+                        action={() =>
+                          mutateAsync({
+                            args: [follower.id],
+                            overrides: {
+                              gasLimit: 1000000, // override default gas limit
+                              value: utils.parseEther("0.01"), // send 0.1 native token with the contract call
+                            },
+                          })
+                        }
+                        onSuccess={() => {
+                          alert(
+                            "Gift sent! Check active issue at https://github.com/AvinashNayak27/gitGift/issues/3"
+                          );
+                        }}
+                      >
+                        Gift
+                      </Web3Button>
 
-    const fetchUserFollowers = async (token) => {
-        try {
-            const response = await axios.get('https://api.github.com/user/followers', {
-                headers: {
-                    'Accept': 'application/vnd.github+json',
-                    'Authorization': `Bearer ${token}`,
-                    'X-GitHub-Api-Version': '2022-11-28'
-                }
-            });
-            setFollowers(response.data);
-        } catch (error) {
-            console.error('Error fetching user followers:', error);
-        }
-    };
-
-
-    const { address, isConnected } = useAccount();
-
-    return (
-        <div className="App bg-gradient-to-r from-teal-400 to-teal-600 p-8">
-            <Navbar />
-
-            <header className="App-header text-center py-16 border-b-4 border-yellow-500">
-                <h1 className="text-5xl font-extrabold mb-8 text-yellow-200 tracking-widest">Welcome to GitGift</h1>
-                {!isLoggedIn && <GitHubLoginButton />}
-                {isLoggedIn && userData && (
-                    <div className="bg-orange-200 p-8 rounded-lg shadow-lg max-w-2xl mx-auto border-4 border-yellow-500">
-                        <img src={userData.avatar_url} alt="User Avatar" className="w-32 h-32 mx-auto rounded-full shadow-md mb-6 border-4 border-yellow-500" />
-                        <p className="text-2xl font-semibold mb-3 text-teal-800">Username: {userData.login}</p>
-                        <p className="text-xl mb-3 text-teal-700">Name: {userData.name}</p>
-                        <p className="text-lg mb-6 text-teal-600">Bio: {userData.bio}</p>
-                        <h2 className="text-4xl font-bold mb-6 tracking-wider">Followers:</h2>
-                        <ul className="grid grid-cols-2 gap-6">
-                            {followers.map(follower => (
-                                <li key={follower.id} className="flex items-center space-x-4">
-                                    <img src={follower.avatar_url} alt="Follower Avatar" className="w-16 h-16 rounded-full border-2 border-yellow-500" />
-                                    <div className="flex flex-col">
-                                        <span className="text-lg font-medium text-teal-800">{follower.login}</span>
-                                        <span className="text-sm text-gray-700 mb-2">{follower.id}</span>
-                                        <div className="group relative">
-                                            <Web3Button
-                                                disabled={!isConnected}
-                                                className={`bg-red-500 text-white px-4 py-2 rounded ${!isConnected ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600 transition duration-300'}`}
-                                                contractAddress={"0x08D20b6672D7C6B35A912B27B898F939530bBDE2"}
-                                                action={() =>
-                                                    mutateAsync({
-                                                        args: [follower.id],
-                                                        overrides: {
-                                                            gasLimit: 1000000, // override default gas limit
-                                                            value: utils.parseEther("0.01"), // send 0.1 native token with the contract call
-                                                        },
-                                                    })
-                                                }
-                                            >
-                                                Gift
-                                            </Web3Button>
-
-                                            {!isConnected && (
-                                                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 px-3 py-1 text-xs text-white bg-black rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                    Please connect your wallet to send a gift
-                                                </span>
-                                            )}
-                                        </div>
-
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                      {!isConnected && (
+                        <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 px-3 py-1 text-xs text-white bg-black rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          Please connect your wallet to send a gift
+                        </span>
+                      )}
                     </div>
-                )}
-            </header>
-        </div>
-
-
-    );
-
-
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </header>
+    </div>
+  );
 }
 
 export default App;
