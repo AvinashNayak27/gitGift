@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginSuccess from './Success.jsx';
 import Claim from './Claim.jsx';
 import '@rainbow-me/rainbowkit/styles.css';
 import {
@@ -40,6 +39,8 @@ const smartWalletOptions = {
   gasless: true,
 };
 
+import { GithubProfileProvider } from './GithubProfileContext.jsx';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
@@ -47,7 +48,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         activeChain={Mumbai}
         clientId="3dabe0bac070c732639774e387ed5ad1"
         supportedWallets={[
-          metamaskWallet(),
+          smartWallet(
+            metamaskWallet(),
+            smartWalletOptions,
+          ),
           smartWallet(
             localWallet(),
             smartWalletOptions,
@@ -58,13 +62,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           ),
         ]}
       >
+        <GithubProfileProvider>
         <Router>
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/success" element={<LoginSuccess />} />
             <Route path='/claim' element={<Claim />} />
           </Routes>
         </Router>
+        </GithubProfileProvider>
       </ThirdwebProvider>
 
     </WagmiConfig>

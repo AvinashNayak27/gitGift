@@ -1,46 +1,15 @@
 const express = require("express");
-const passport = require("passport");
-const GitHubStrategy = require("passport-github").Strategy;
-const session = require("express-session");
 const { ThirdwebSDK } = require("@thirdweb-dev/sdk");
 const axios = require("axios");
 require("dotenv").config();
 
+const cors = require("cors");
+
 const app = express();
 
-// Use session to keep track of login state
-app.use(
-    session({
-        secret: "your-secret-key",
-        resave: false,
-        saveUninitialized: false,
-    })
-);
+app.use(cors());
 
-app.use(passport.initialize());
-app.use(passport.session());
 
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser((obj, done) => {
-    done(null, obj);
-});
-
-passport.use(
-    new GitHubStrategy(
-        {
-            clientID: process.env.GITHUB_CLIENT_ID,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: "http://localhost:3000/auth/github/callback",
-        },
-        (accessToken, refreshToken, profile, done) => {
-            profile.accessToken = accessToken;
-            return done(null, profile);
-        }
-    )
-);
 async function getUsernameFromID(userID) {
     try {
         const response = await axios.get(`https://api.github.com/user/${userID}`, {
@@ -111,15 +80,47 @@ const fn = async () => {
     });
 };
 
-app.get("/auth/github", passport.authenticate("github"));
+app.get("/search/users/:prefix", async (req, res) => {
+    const prefix = req.params.prefix;
+    const perPage = 5; // Limit results to top 5
 
-app.get(
-    "/auth/github/callback",
-    passport.authenticate("github", { failureRedirect: "/" }),
-    (req, res) => {
-        // Redirect to the frontend with the access token as a query parameter
-        res.redirect(`http://localhost:5173/success?token=${req.user.accessToken}`);
+    try {
+        const response = await axios.get(`https://api.github.com/search/users?q=${prefix}+in:login&type=Users`, {
+            headers: {
+                Authorization: `token ${process.env.GITHUB_PAT}`,
+                Accept: "application/vnd.github.v3+json",
+            },
+            params: {
+                per_page: perPage,
+            },
+        });
+
+        // Send back only the items array from the response data
+        res.json(response.data.items);
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).send("Error fetching user data");
     }
+});
+
+app.get("/users/:userid", async (req, res) => {
+    const userID = req.params.userid;
+
+    try {
+        const response = await axios.get(`https://api.github.com/user/${userID}`, {
+            headers: {
+                Authorization: `token ${process.env.GITHUB_PAT}`,
+                Accept: "application/vnd.github.v3+json",
+            },
+        });
+
+        res.json(response.data);
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).send("Error fetching user data");
+    }
+}
+
 );
 
 app.listen(3000, () => {
