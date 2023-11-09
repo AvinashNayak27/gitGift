@@ -11,14 +11,14 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import {
-  polygonMumbai,
+  baseGoerli,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { ThirdwebProvider, smartWallet, embeddedWallet, metamaskWallet, localWallet } from "@thirdweb-dev/react";
-import { Mumbai } from "@thirdweb-dev/chains";
+import { BaseGoerli } from "@thirdweb-dev/chains";
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai],
+  [baseGoerli],
   [
     publicProvider()
   ]
@@ -35,7 +35,7 @@ const wagmiConfig = createConfig({
 })
 
 const smartWalletOptions = {
-  factoryAddress: "0x2d27d0302cca2d9e540ffd628c9a68238bc1a3ab",
+  factoryAddress: "0x97a277e9b325785b9a4c33d4e39c8d6193b54f83",
   gasless: true,
 };
 
@@ -45,7 +45,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <WagmiConfig config={wagmiConfig}>
       <ThirdwebProvider
-        activeChain={Mumbai}
+        activeChain={BaseGoerli}
         clientId="3dabe0bac070c732639774e387ed5ad1"
         supportedWallets={[
           smartWallet(

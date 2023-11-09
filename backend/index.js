@@ -3,6 +3,8 @@ const { ThirdwebSDK } = require("@thirdweb-dev/sdk");
 const axios = require("axios");
 require("dotenv").config();
 
+const {BaseGoerli}=require("@thirdweb-dev/chains");
+
 const cors = require("cors");
 
 const app = express();
@@ -52,11 +54,11 @@ const createIssue = async (githubUsername,token) => {
 
 const fn = async () => {
 
-    const sdk = new ThirdwebSDK("mumbai", {
+    const sdk = new ThirdwebSDK(BaseGoerli,{
         secretKey: process.env.YOUR_SECRET_KEY,
     });
 
-    const contract = await sdk.getContract("0x144b8A177c1C735065c9c8C1016a1bEf20d112a7");
+    const contract = await sdk.getContract("0x454ce17407Fd9dF321e97FeaED0e24334d90C636");
 
     contract.events.listenToAllEvents(async (event) => {
         console.log(event.eventName); // the name of the emitted event

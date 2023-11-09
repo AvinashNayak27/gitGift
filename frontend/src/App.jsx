@@ -11,7 +11,7 @@ import { utils } from "ethers";
 
 function App() {
   const { contract } = useContract(
-    "0x144b8A177c1C735065c9c8C1016a1bEf20d112a7"
+    "0x454ce17407Fd9dF321e97FeaED0e24334d90C636"
   );
   const { mutateAsync, isLoading, isSuccess } = useContractWrite(
     contract,
@@ -57,7 +57,7 @@ function App() {
           // call the donateETH function on the contract
           <Web3Button
           contractAddress={
-            "0x144b8A177c1C735065c9c8C1016a1bEf20d112a7"
+            "0x454ce17407Fd9dF321e97FeaED0e24334d90C636"
           }
           action={() =>
             mutateAsync({

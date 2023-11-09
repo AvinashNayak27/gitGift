@@ -14,7 +14,7 @@ import { useAddress, useContract, useContractWrite, useConnectionStatus } from "
 export default function Claim() {
     const address = useAddress();
     const [responseBytes, setResponseBytes] = useState(null);
-    const { contract } = useContract("0x144b8A177c1C735065c9c8C1016a1bEf20d112a7")
+    const { contract } = useContract("0x454ce17407Fd9dF321e97FeaED0e24334d90C636")
     const { mutateAsync: claimWithSismo, isLoading } = useContractWrite(contract, "claimWithSismo")
 
     const call = async () => {

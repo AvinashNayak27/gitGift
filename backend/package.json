@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@octokit/core": "^5.0.1",
+    "@thirdweb-dev/chains": "^0.1.58",
     "@thirdweb-dev/sdk": "^4.0.6",
     "axios": "^1.5.1",
     "cors": "^2.8.5",
