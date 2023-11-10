@@ -1,0 +1,17 @@
+# fly.toml app configuration file generated for gitgift on 2023-11-10T16:02:53+05:30
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "gitgift"
+primary_region = "ams"
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]

@@ -28,7 +28,7 @@ function App() {
   useEffect(() => {
     if (selectedGithubId) {
       axios
-        .get(`http://localhost:3000/users/${selectedGithubId}`)
+        .get(`https://gitgift.fly.dev/users/${selectedGithubId}`)
         .then((res) => {
           console.log(res.data);
           setSelectedGithubUsername(res.data.login);

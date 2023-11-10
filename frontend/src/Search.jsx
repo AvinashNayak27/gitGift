@@ -17,7 +17,7 @@ const SearchBar = () => {
     }
     try {
       const response = await axios.get(
-        `http://localhost:3000/search/users/${search}`
+        `https://gitgift.fly.dev/search/users/${search}`
       );
       setProfiles(response.data);
     } catch (error) {
