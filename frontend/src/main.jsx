@@ -16,6 +16,12 @@ import {
 import { publicProvider } from 'wagmi/providers/public';
 import { ThirdwebProvider, smartWallet, embeddedWallet, metamaskWallet, localWallet } from "@thirdweb-dev/react";
 import { BaseGoerli } from "@thirdweb-dev/chains";
+import { createClient, Provider } from 'urql';
+
+// URQL Client
+const client = createClient({
+  url: 'https://api.studio.thegraph.com/query/59475/gitgift/version/latest/'
+});
 
 const { chains, publicClient } = configureChains(
   [baseGoerli],
@@ -62,6 +68,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           ),
         ]}
       >
+        <Provider value={client}>
         <GithubProfileProvider>
         <Router>
           <Routes>
@@ -70,6 +77,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           </Routes>
         </Router>
         </GithubProfileProvider>
+        </Provider>
       </ThirdwebProvider>
 
     </WagmiConfig>

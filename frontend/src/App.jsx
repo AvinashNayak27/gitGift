@@ -11,14 +11,12 @@ import { utils } from "ethers";
 
 function App() {
   const { contract } = useContract(
-    "0x454ce17407Fd9dF321e97FeaED0e24334d90C636"
+    "0x9fE69604504f6089c64cB774D015890541F808de"
   );
   const { mutateAsync, isLoading, isSuccess } = useContractWrite(
     contract,
     "donateETH"
   );
-
-  const { address, isConnected } = useAccount();
   const { selectedGithubId } = useGithubProfile();
 
   const [selectedGithubusername, setSelectedGithubUsername] = useState(null);
@@ -28,7 +26,7 @@ function App() {
   useEffect(() => {
     if (selectedGithubId) {
       axios
-        .get(`https://gitgift.fly.dev/users/${selectedGithubId}`)
+        .get(`http://localhost:3000/users/${selectedGithubId}`)
         .then((res) => {
           console.log(res.data);
           setSelectedGithubUsername(res.data.login);
@@ -57,7 +55,7 @@ function App() {
           // call the donateETH function on the contract
           <Web3Button
           contractAddress={
-            "0x454ce17407Fd9dF321e97FeaED0e24334d90C636"
+            "0x9fE69604504f6089c64cB774D015890541F808de"
           }
           action={() =>
             mutateAsync({

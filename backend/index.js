@@ -58,7 +58,7 @@ const fn = async () => {
         secretKey: process.env.YOUR_SECRET_KEY,
     });
 
-    const contract = await sdk.getContract("0x454ce17407Fd9dF321e97FeaED0e24334d90C636");
+    const contract = await sdk.getContract("0x9fE69604504f6089c64cB774D015890541F808de");
 
     contract.events.listenToAllEvents(async (event) => {
         console.log(event.eventName); // the name of the emitted event
