@@ -29,7 +29,7 @@ async function getUsernameFromID(userID) {
 
 const createIssue = async (githubUsername,token) => {
     const issueTitle = `Got some ${token} for you!`;
-    const issueBody = `Hello @${githubUsername}. Someone Gifted you some ${token} claim at https://gitgift.vercel.app/claim `;
+    const issueBody = `Hello @${githubUsername}. Someone Gifted you some ${token} claim at http://localhost:5317/claim `;
 
     try {
         const response = await axios.post(
