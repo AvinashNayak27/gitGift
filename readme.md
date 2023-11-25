@@ -2,6 +2,8 @@
 
 GitGift is an innovative application designed to facilitate donations to GitHub users using Ethereum (ETH) on the Base testnet. It integrates The Graph for efficient data querying and indexing,Sismo Connect and Thirdweb to create a user-friendly and secure donation platform.
 
+[Demo Video](https://www.youtube.com/watch?v=_H1xatp979o)
+
 ## Key Features of GitGift:
 
 - **Seamless Donations**: Users can donate ETH to any GitHub user on the Base testnet with ease.
